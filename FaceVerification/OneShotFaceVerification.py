@@ -2,10 +2,10 @@ import os
 
 import cv2
 import numpy as np
-from packages.Database.image_dataset import Dataset
-from packages.FaceDetection.FaceDetector import Detector
+from Database.image_dataset import Dataset
+from FaceDetection.FaceDetector import Detector
 
-import packages.FaceVerification.FaceToolKit as ftk
+import FaceVerification.FaceToolKit as ftk
 
 
 class Verifier:
@@ -45,7 +45,6 @@ class Verifier:
         for image_path in self.dataset.images():
             image = cv2.imread(image_path)
 
-            detected_face = self.dataset_face_detector.detect_faces(image)[0]
             detected_face = self.dataset_face_detector.detect_faces(image)[0]
 
             aligned_face = self.dataset_face_detector.align(detected_face['face'])
