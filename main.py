@@ -43,17 +43,17 @@ def poi(frame, starting_point, ending_point, dash_size=10, padding=0.7):
         pt1 = (int(11 * line_length), 2)
         pt2 = (int(11 * line_length), int(line_length))
 
-        cv2.line(box, tuple(pt1), tuple(pt2), (0, 255, 255), 2)
+        cv2.line(box, tuple(pt1), tuple(pt2), (0, 0, 200), 2)
 
         for position in thickness_3_positions:
             pt1 = (int(position * line_length), 2)
             pt2 = (int((position + 1) * line_length), 2)
 
-            cv2.line(box, tuple(pt1), tuple(pt2), (0, 255, 255), 4)
+            cv2.line(box, tuple(pt1), tuple(pt2), (0, 0, 200), 4)
 
         box = cv2.rotate(box, cv2.ROTATE_90_CLOCKWISE)
 
-    text = 'Admin'
+    text = 'XXX-XXX-6354'
     font = cv2.FONT_HERSHEY_SIMPLEX
     font_scale = 0.45
     font_thickness = 2
@@ -82,7 +82,7 @@ def poi(frame, starting_point, ending_point, dash_size=10, padding=0.7):
         return frame
 
 
-ip_camera_url = 'http://192.168.43.1:8080/video'
+ip_camera_url = 'http://192.168.1.5:8080/video'
 
 cctv1 = CCTV(ip_camera_url)
 
