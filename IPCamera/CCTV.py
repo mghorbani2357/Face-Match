@@ -24,7 +24,7 @@ class CCTV:
 
             # resize the frame to have a width of 600 pixels (while maintaining the aspect ratio),
             # and then grab the image dimensions
-            frame = imutils.resize(frame, width=600)
+            frame = imutils.resize(frame, width=1080)
             fps.update()
 
             yield frame
