@@ -3,14 +3,15 @@ import numpy as np
 from detection.mtcnn import detect_face
 from scipy import misc
 
-default_color = (0, 255, 0) #BGR
+default_color = (0, 255, 0)  # BGR
 default_thickness = 2
-minsize = 20 # minimum size of face
-threshold = [ 0.6, 0.7, 0.7 ]  # three steps threshold
-factor = 0.709 # scale factor
+minsize = 20  # minimum size of face
+threshold = [0.6, 0.7, 0.7]  # three steps threshold
+factor = 0.709  # scale factor
 
 margin = 44
 image_size = 160
+
 
 class Detection:
     def __init__(self):
@@ -18,10 +19,10 @@ class Detection:
         self.session = tf.Session(config=tf.ConfigProto(gpu_options=gpu_options))
         self.pnet, self.rnet, self.onet = detect_face.create_mtcnn(self.session, None)
 
-    def detect(self, img, detect_multiple_faces = True):
+    def detect(self, img, detect_multiple_faces=True):
         bboxes = []
         bounding_boxes, points = detect_face.detect_face(
-                img, minsize, self.pnet, self.rnet, self.onet, threshold, factor)
+            img, minsize, self.pnet, self.rnet, self.onet, threshold, factor)
         nrof_faces = bounding_boxes.shape[0]
         if nrof_faces > 0:
             det = bounding_boxes[:, 0:4]
@@ -51,18 +52,16 @@ class Detection:
                 bb[3] = np.minimum(det[3] + margin / 2, img_size[0])
                 bboxes.append(bb)
         return bboxes
-            
 
-
-    def align(self, img, detect_multiple_faces = True):
+    def align(self, img, detect_multiple_faces=True):
         faces = []
-        bboxes = self.detect(img,False)         
+        bboxes = self.detect(img, False)
         for bb in bboxes:
             cropped = img[bb[1]:bb[3], bb[0]:bb[2], :]
             scaled = misc.imresize(cropped, (image_size, image_size), interp='bilinear')
             faces.append(scaled)
         return faces
-    
+
     def crop_detected_face(self, img, bb):
         cropped = img[bb[1]:bb[3], bb[0]:bb[2], :]
         scaled = misc.imresize(cropped, (image_size, image_size), interp='bilinear')

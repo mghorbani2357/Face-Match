@@ -1,4 +1,5 @@
 import tensorflow.compat.v1 as tf
+
 tf.disable_v2_behavior()
 import numpy as np
 from facenet import face
@@ -25,19 +26,16 @@ class Verification:
         face.load_model(model, self.session)
 
     def initial_input_output_tensors(self):
-
         self.images_placeholder = tf.get_default_graph().get_tensor_by_name("input:0")
         self.embeddings = tf.get_default_graph().get_tensor_by_name("embeddings:0")
         self.phase_train_placeholder = tf.get_default_graph().get_tensor_by_name("phase_train:0")
         self.embedding_size = self.embeddings.get_shape()[1]
 
-
     def img_to_encoding(self, img, image_size):
         image = face.make_image_tensor(img, image_size)
 
-        feed_dict = {self.images_placeholder: image, self.phase_train_placeholder:False }
+        feed_dict = {self.images_placeholder: image, self.phase_train_placeholder: False}
         emb_array = np.zeros((1, self.embedding_size))
         emb_array[0, :] = self.session.run(self.embeddings, feed_dict=feed_dict)
 
         return np.squeeze(emb_array)
-
