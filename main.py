@@ -82,7 +82,7 @@ def poi(frame, starting_point, ending_point, dash_size=10, padding=0.7):
         return frame
 
 
-ip_camera_url = 'http://192.168.1.5:8080/video'
+ip_camera_url = 'http://192.168.1.3:8080/video'
 
 cctv1 = CCTV(ip_camera_url)
 
