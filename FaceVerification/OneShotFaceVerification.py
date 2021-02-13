@@ -1,9 +1,8 @@
 import os
-
+from base64 import b64encode, b64decode
 import cv2
 import numpy as np
-from Database.image_dataset import Dataset
-from FaceDetection.FaceDetector import Detector
+from FaceDataset import Dataset
 
 import FaceVerification.FaceToolKit as ftk
 
@@ -17,7 +16,6 @@ class Verifier:
         self.verifier.load_model("./models/20180204-160909/")
         self.verifier.initial_input_output_tensors()
         self.dataset = Dataset(dataset_path)
-        self.dataset_face_detector = Detector()
 
     def img_to_encoding(self, aligned_image):
         return self.verifier.img_to_encoding(aligned_image, self.image_size)
@@ -42,20 +40,19 @@ class Verifier:
         encoded_face = self.img_to_encoding(face)
 
         min_dist = 1000
-        for image_path in self.dataset.images():
-            image = cv2.imread(image_path)
+        for profile in self.dataset.dataset.values():
 
-            detected_face = self.dataset_face_detector.detect_faces(image)[0]
+            nparr = np.frombuffer(b64decode(profile['profile_picture'].encode()), np.uint8)
 
-            aligned_face = self.dataset_face_detector.align(detected_face['face'])
+            dataset_face = cv2.imencode(nparr, cv2.IMREAD_UNCHANGED)
 
-            encoded_dataset_image = self.img_to_encoding(aligned_face)
+            encoded_dataset_face = self.img_to_encoding(dataset_face)
 
-            verified, dist = self.verify(encoded_face, encoded_dataset_image)
+            verified, dist = self.verify(encoded_face, encoded_dataset_face)
 
             if dist < min_dist:
                 min_dist = dist
-                identity = os.path.basename(image_path)
+                identity = profile['full_name']
                 # identity = os.path.splitext(os.path.basename(image_path))[0]
 
         if min_dist < self.verification_threshold:

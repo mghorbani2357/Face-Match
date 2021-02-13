@@ -1,10 +1,10 @@
 from FaceDetection.FaceDetector import Detector
-# from FaceVerification.OneShotFaceVerification import Verifier
+from FaceVerification.OneShotFaceVerification import Verifier
 from IPCamera.CCTV import CCTV
 import cv2
 
 
-def poi(frame, starting_point, ending_point, dash_size=10, padding=0.7):
+def poi(frame, starting_point, ending_point, padding=0.7, text=''):
     l = ending_point[0] - starting_point[0]
     h = ending_point[1] - starting_point[1]
 
@@ -53,7 +53,7 @@ def poi(frame, starting_point, ending_point, dash_size=10, padding=0.7):
 
         box = cv2.rotate(box, cv2.ROTATE_90_CLOCKWISE)
 
-    text = 'XXX-XXX-6354'
+    # text = 'XXX-XXX-6354'
     font = cv2.FONT_HERSHEY_SIMPLEX
     font_scale = 0.45
     font_thickness = 2
@@ -82,20 +82,20 @@ def poi(frame, starting_point, ending_point, dash_size=10, padding=0.7):
         return frame
 
 
-ip_camera_url = 'http://192.168.1.3:8080/video'
+ip_camera_url = 'http://192.168.1.5:8080/video'
 
 cctv1 = CCTV(ip_camera_url)
 
 detector = Detector()
 
+verifier = Verifier('instagram.json')
 for frame in cctv1.start_streaming():
     for detected_face in detector.detect_faces(frame):
         # if real_face.verify(detected_face['face']):
         # if True:
-        # identity = verifier.who_is_it(detector.align(detected_face['face']))
-        # print(identity)
+        identity = verifier.who_is_it(detector.align(detected_face['face']))
 
-        frame = poi(frame, detected_face['box']['start_point'], detected_face['box']['end_point'])
+        frame = poi(frame, detected_face['box']['start_point'], detected_face['box']['end_point'], text=identity)
 
     cv2.imshow("Frame", frame)
 
