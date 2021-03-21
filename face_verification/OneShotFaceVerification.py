@@ -2,9 +2,9 @@ import os
 from base64 import b64encode, b64decode
 import cv2
 import numpy as np
-from FaceDataset import Dataset
+from face_dataset import Dataset
 
-import FaceVerification.FaceToolKit as ftk
+import face_verification.FaceToolKit as ftk
 
 
 class Verifier:

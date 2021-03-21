@@ -1,6 +1,6 @@
-from FaceDetection.FaceDetector import Detector
-from FaceVerification.OneShotFaceVerification import Verifier
-from IPCamera.CCTV import CCTV
+from face_Detection.FaceDetector import Detector
+from face_verification.OneShotFaceVerification import Verifier
+from ip_camera.CCTV import CCTV
 import cv2
 
 

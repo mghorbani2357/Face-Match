@@ -1,7 +1,7 @@
 import instaloader.instaloader
 from instaloader import Profile
-from FaceDataset import Dataset
-from FaceDetection.FaceDetector import Detector
+from face_dataset import Dataset
+from face_Detection.FaceDetector import Detector
 import requests
 from base64 import b64encode, b64decode
 import cv2
