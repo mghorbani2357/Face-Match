@@ -44,13 +44,13 @@ def poi(frame, starting_point, ending_point, padding=0.7, text=''):
         pt1 = (int(11 * line_length), 2)
         pt2 = (int(11 * line_length), int(line_length))
 
-        cv2.line(box, tuple(pt1), tuple(pt2), (0, 0, 200), 2)
+        cv2.line(box, tuple(pt1), tuple(pt2), (0, 200, 200), 2)
 
         for position in thickness_3_positions:
             pt1 = (int(position * line_length), 2)
             pt2 = (int((position + 1) * line_length), 2)
 
-            cv2.line(box, tuple(pt1), tuple(pt2), (0, 0, 200), 4)
+            cv2.line(box, tuple(pt1), tuple(pt2), (0, 200, 200), 4)
 
         box = cv2.rotate(box, cv2.ROTATE_90_CLOCKWISE)
 
@@ -85,3 +85,14 @@ def poi(frame, starting_point, ending_point, padding=0.7, text=''):
 
 def ip_camera_url_builder():
     return f"{os.getenv('IP_CAMERA_PROTOCOL')}://{os.getenv('IP_CAMERA_IP')}:{os.getenv('IP_CAMERA_PORTL')}/{os.getenv('IP_CAMERA_PATH')}"
+
+
+def get_command(lst):
+    while True:
+        for idx, item in enumerate(lst):
+            print(f"{item['command']} ({item['description'] if 'description' in item.keys() else ''})")
+
+        command = input('>')
+        return command
+        # if command[:command.index(' ')] in [item.keys() for item in lst]:
+        #     return command
