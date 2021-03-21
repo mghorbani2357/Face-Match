@@ -10,7 +10,7 @@ import numpy as np
 
 class InstaFeeder:
     L = instaloader.Instaloader()
-    L.load_session_from_file('feeder347',
+    L.load_session_from_file('',
                              '/home/bluesp/WorkSpaces/PyCharmProjects/AI/Single-Shot-Face-Recognition/feeder347')
 
     def __init__(self):
@@ -27,7 +27,7 @@ class InstaFeeder:
             i += 1
             print(i)
             # print(f'{i}/{Profile.followees()}')
-            response = requests.get(following.profile_pic_url,allow_redirects=True)
+            response = requests.get(following.profile_pic_url, allow_redirects=True)
             np_arr = np.frombuffer(response.content, np.uint8)
             img = cv2.imdecode(np_arr, cv2.IMREAD_UNCHANGED)
             detected_faces = self.face_detector.detect_faces(img)

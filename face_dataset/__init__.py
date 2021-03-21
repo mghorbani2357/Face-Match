@@ -1,5 +1,4 @@
 import json
-
 import os
 
 
@@ -23,6 +22,7 @@ class Dataset:
             'username': profile['username'],
             'full_name': profile['full_name'],
             'profile_picture': profile['profile_pic'],
+            'detected_faces': profile['detected_faces'],
             # 'is_verified ': profile['is_verified'],
             # 'followed_by_viewer': profile['followed_by_viewer'],
             # 'requested_by_viewer': profile['requested_by_viewer'],
