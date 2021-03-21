@@ -9,8 +9,8 @@ class Detector:
 
     def __init__(self):
         #  Load Face Detector
-        deploy = "deploy.json"
-        model_path = "res10_300x300_ssd_iter_140000.caffemodel"
+        deploy = "face_detection/deploy.json"
+        model_path = "face_detection/res10_300x300_ssd_iter_140000.caffemodel"
 
         self.detector = cv2.dnn.readNetFromCaffe(deploy, model_path)
 

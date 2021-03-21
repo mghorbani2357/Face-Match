@@ -19,8 +19,11 @@ class Dataset:
 
     def add_profiles(self, profiles):
         for profile in profiles:
+            if profile is None:
+                continue
+
             self.dataset[profile['id']] = {
-                'image': profile['profile_picture'],
+                'image': profile['image'],
                 'detected_faces': profile['detected_faces'],
                 'metadata': {
                     'username': profile['username'],

@@ -9,13 +9,15 @@ import numpy as np
 import yaspin
 import asyncio
 from yaspin import yaspin
-import time
+
+from utils import poi
 
 
 class InstaFeeder:
     L = instaloader.Instaloader()
+    sp = yaspin(text="Downloading images", color="cyan")
 
-    def __init__(self, dataset_path, auth=None, session_path=None):
+    def __init__(self, dataset_path, username, password=None, session_path=None):
         """
 
         Args:
@@ -26,10 +28,10 @@ class InstaFeeder:
         self.dataset = Dataset(dataset_path)
         self.face_detector = Detector()
         if session_path is not None:
-            self.load_session(session_path)
+            self.load_session(username, session_path)
 
-        elif auth is not None:
-            self.new_session(auth[0], auth[1])
+        elif password is not None:
+            self.new_session(username, password)
 
     def new_session(self, username, password):
         self.L.login(username, password)
@@ -37,32 +39,48 @@ class InstaFeeder:
     def save_session(self, path):
         self.L.save_session_to_file(path)
 
-    def load_session(self, path):
-        self.L.load_session_from_file('', 'path')
+    def load_session(self, username, path):
+        self.L.load_session_from_file(username, path)
 
     async def get_profile(self, profile):
+        print(f"Downloading {profile.username} ")
+        # response = await asyncio.get_event_loop().run_in_executor(None, requests.get, profile.profile_pic_url)
         response = requests.get(profile.profile_pic_url, allow_redirects=True)
         np_arr = np.frombuffer(response.content, np.uint8)
         img = cv2.imdecode(np_arr, cv2.IMREAD_UNCHANGED)
-        detected_faces = self.face_detector.detect_faces(img)
 
         json_profile = {
-            'image': b64encode(cv2.imencode('.jpg', img)).decode(),
+            'id': profile.userid,
+            'image': b64encode(response.content).decode(),
             'detected_faces': [],
-            'meta': {
-                'id': profile.userid,
-                'username': profile.username,
-                'full_name': profile.full_name,
-            }
-
+            'username': profile.username,
+            'full_name': profile.full_name,
         }
+        # detected_faces = await asyncio.get_event_loop().run_in_executor(None, self.face_detector.detect_faces, img)
+        detected_faces = detected_faces = self.face_detector.detect_faces(img)
 
-        for face in detected_faces:
-            starting_point = face[0]['box']['start_point']
-            ending_point = face[0]['box']['end_point']
-            face = img[starting_point[0]:ending_point[0], starting_point[1]:ending_point[1]]
-            is_success, im_buf_arr = cv2.imencode('.jpg', face)
-            json_profile['detected_faces'].append(b64encode(im_buf_arr).decode())
+        for detected_face in detected_faces:
+            starting_point = detected_face['box']['start_point']
+            ending_point = detected_face['box']['end_point']
+
+            # if (ending_point[0] - starting_point[0]) > 0 and (ending_point[1] - starting_point[1]) > 0:
+            try:
+                face = img[starting_point[0]:ending_point[0], starting_point[1]:ending_point[1]]
+                is_success, im_buf_arr = cv2.imencode('.jpg', face)
+                json_profile['detected_faces'].append(b64encode(im_buf_arr).decode())
+                frame = poi(img, detected_face['box']['start_point'], detected_face['box']['end_point'], text='404')
+
+            except:
+
+                print(len(detected_face), profile.username, detected_face)
+
+        cv2.imshow("Frame", frame)
+
+        cv2.waitKey(1) & 0xFF
+
+        done_task_count = len([task for task in asyncio.Task.all_tasks() if task.done()])
+        all_tasks_count = len(asyncio.Task.all_tasks())
+        print(f"{profile.username} downloaded  ({done_task_count}/{all_tasks_count})")
 
         return json_profile
 
@@ -70,14 +88,13 @@ class InstaFeeder:
     async def __print_progress():
         with yaspin(text="Downloading images", color="cyan") as sp:
             while True:
-                done_task_count = len([task for task in asyncio.Task.all_tasks() if not task.done()])
+                done_task_count = len([task for task in asyncio.Task.all_tasks() if task.done()])
                 all_tasks_count = len(asyncio.Task.all_tasks())
                 sp.write(f"{done_task_count}/{all_tasks_count}")
-
-                if all_tasks_count == done_task_count:
+                if all_tasks_count - 1 == done_task_count:
                     break
                 else:
-                    time.sleep(0.1)
+                    await asyncio.sleep(0.1)
 
             sp.ok("Profiles downloaded.")
 
@@ -86,19 +103,19 @@ class InstaFeeder:
         followings = profile.get_followees()
 
         tasks = list()
-        tasks.append(self.__print_progress())
+        # tasks.append(self.__print_progress())
+        print('here')
         for following in followings:
+            if len(tasks) > 10:
+                break
+            print(f'\r{len(tasks) - 1}/{followings.count}', end='')
             tasks.append(self.get_profile(following))
+        print()
 
-        profiles = list(asyncio.gather(*tasks))
+        profiles = asyncio.get_event_loop().run_until_complete(asyncio.gather(*tasks))
 
-        profiles.remove(None)
+        # profiles.remove(None)
 
         self.dataset.add_profiles(profiles)
 
         self.dataset.save()
-
-
-if __name__ == "__main__":
-    feeder = InstaFeeder('insta1.json', session_path='feeder347')
-    feeder.get_followers_profile_from_user('m.ghorbani2357')
