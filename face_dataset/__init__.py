@@ -17,16 +17,16 @@ class Dataset:
             self.dataset = {}
             self.save()
 
-    def add_profile(self, profile):
-        self.dataset[profile['id']] = {
-            'username': profile['username'],
-            'full_name': profile['full_name'],
-            'profile_picture': profile['profile_pic'],
-            'detected_faces': profile['detected_faces'],
-            # 'is_verified ': profile['is_verified'],
-            # 'followed_by_viewer': profile['followed_by_viewer'],
-            # 'requested_by_viewer': profile['requested_by_viewer'],
-        }
+    def add_profiles(self, profiles):
+        for profile in profiles:
+            self.dataset[profile['id']] = {
+                'image': profile['profile_picture'],
+                'detected_faces': profile['detected_faces'],
+                'metadata': {
+                    'username': profile['username'],
+                    'full_name': profile['full_name'],
+                }
+            }
 
     def save(self):
         with open(self.database_path, 'w') as database:
