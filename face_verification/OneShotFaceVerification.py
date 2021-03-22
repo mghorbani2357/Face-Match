@@ -1,5 +1,7 @@
 import os
 from base64 import b64encode, b64decode
+from typing import re
+
 import cv2
 import numpy as np
 from face_dataset import Dataset
@@ -36,6 +38,25 @@ class Verifier:
             return True, dist
         else:
             return False, dist
+
+    def more_alike(self, checking_face, faces):
+        """
+            Args:
+                 faces(list)
+        """
+
+        min_dist = 1000
+        similar_face_index = None
+
+        for face in faces:
+            verified, dist = self.verify(checking_face, face)
+
+            if dist < min_dist:
+                min_dist = dist
+                if min_dist < self.verification_threshold:
+                    similar_face_index = faces.index(face)
+
+        return similar_face_index
 
     def who_is_it(self, face):
         identity = '404'
