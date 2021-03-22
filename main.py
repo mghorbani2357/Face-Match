@@ -11,6 +11,9 @@ from threading import Thread
 import time
 from multiprocessing import Process
 
+detector = Detector()
+verifier = Verifier('instagram.json')
+
 
 def view_camera(camera_config):
     # cctvs = list()
@@ -19,7 +22,6 @@ def view_camera(camera_config):
     print(ip_camera_url)
     cctv = CCTV(ip_camera_url)
 
-    detector = Detector()
     # verifier = Verifier('instagram.json')
 
     for frame in cctv.start_streaming():
