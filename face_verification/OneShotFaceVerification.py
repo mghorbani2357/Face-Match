@@ -57,10 +57,11 @@ class Verifier:
 
                 if dist < min_dist:
                     min_dist = dist
-                    identity = profile['full_name']
+                    if min_dist < self.verification_threshold:
+                        identity = profile['full_name']
                     # identity = os.path.splitext(os.path.basename(image_path))[0]
 
-            if min_dist < self.verification_threshold:
-                return identity
+            # if min_dist < self.verification_threshold:
+            #     return identity
 
         return identity
