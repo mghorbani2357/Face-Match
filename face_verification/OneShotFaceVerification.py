@@ -11,11 +11,14 @@ class Verifier:
     verification_threshold = 1.188
     image_size = 160
 
-    def __init__(self, dataset_path):
+    def __init__(self, dataset_path=None):
         self.verifier = ftk.Verification()
         self.verifier.load_model("./models/20180204-160909/")
         self.verifier.initial_input_output_tensors()
-        self.dataset = Dataset(dataset_path)
+        if dataset_path is not None:
+            self.dataset = Dataset(dataset_path)
+        else:
+            self.dataset = None
 
     def img_to_encoding(self, aligned_image):
         return self.verifier.img_to_encoding(aligned_image, self.image_size)
@@ -37,25 +40,27 @@ class Verifier:
     def who_is_it(self, face):
         identity = '404'
 
-        encoded_face = self.img_to_encoding(face)
+        if self.dataset is not None:
 
-        min_dist = 1000
-        for profile in self.dataset.dataset.values():
+            encoded_face = self.img_to_encoding(face)
 
-            nparr = np.frombuffer(b64decode(profile['profile_picture'].encode()), np.uint8)
+            min_dist = 1000
+            for profile in self.dataset.dataset.values():
 
-            dataset_face = cv2.imencode(nparr, cv2.IMREAD_UNCHANGED)
+                nparr = np.frombuffer(b64decode(profile['profile_picture'].encode()), np.uint8)
 
-            encoded_dataset_face = self.img_to_encoding(dataset_face)
+                dataset_face = cv2.imencode(nparr, cv2.IMREAD_UNCHANGED)
 
-            verified, dist = self.verify(encoded_face, encoded_dataset_face)
+                encoded_dataset_face = self.img_to_encoding(dataset_face)
 
-            if dist < min_dist:
-                min_dist = dist
-                identity = profile['full_name']
-                # identity = os.path.splitext(os.path.basename(image_path))[0]
+                verified, dist = self.verify(encoded_face, encoded_dataset_face)
 
-        if min_dist < self.verification_threshold:
-            return identity
-        else:
-            return '404'
+                if dist < min_dist:
+                    min_dist = dist
+                    identity = profile['full_name']
+                    # identity = os.path.splitext(os.path.basename(image_path))[0]
+
+            if min_dist < self.verification_threshold:
+                return identity
+
+        return identity
