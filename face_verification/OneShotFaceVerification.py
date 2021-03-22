@@ -56,7 +56,7 @@ class Verifier:
                 if min_dist < self.verification_threshold:
                     similar_face_index = faces.index(face)
 
-        return similar_face_index
+        return similar_face_index, dist
 
     def who_is_it(self, face):
         identity = '404'
@@ -80,9 +80,5 @@ class Verifier:
                     min_dist = dist
                     if min_dist < self.verification_threshold:
                         identity = profile['full_name']
-                    # identity = os.path.splitext(os.path.basename(image_path))[0]
-
-            # if min_dist < self.verification_threshold:
-            #     return identity
 
         return identity

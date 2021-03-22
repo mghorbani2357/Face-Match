@@ -11,18 +11,24 @@ class Tracker:
         self.cache_duration = cache_duration
         self.verifier = Verifier(dataset_path)
 
+    def __garbage_collector(self, face_set):
+        for item in face_set:
+            if time.time() - item['timestamp'] > self.cache_duration:
+                face_set.remove(item)
+
+        return face_set
+
     def __search_in(self, to_verify_face, verified_faces):
         identity = None
-        for verified_face in verified_faces:
-            if self.verifier.verifier(to_verify_face, verified_face['face']):
-                verified_face['timestamp'] = time.time()
-                identity = verified_face['id']
-                break
-            else:
-                if time.time() - verified_face['timestamp'] > self.cache_duration:
-                    verified_faces.remove(verified_face)
 
-        return identity, verified_faces
+        faces = [verified_face['face'] for verified_face in verified_faces]
+        index, dist = self.verifier.more_alike(to_verify_face, faces)
+
+        if index is not None:
+            verified_faces[index]['timestamp'] = time.time()
+            identity = verified_faces[index]['id']
+
+        return identity, self.__garbage_collector(verified_faces)
 
     def track_faces(self, faces):
         """
