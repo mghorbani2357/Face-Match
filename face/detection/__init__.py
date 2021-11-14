@@ -9,8 +9,8 @@ class Detector:
 
     def __init__(self):
         #  Load Face Detector
-        deploy = "face_detection/deploy.json"
-        model_path = "face_detection/res10_300x300_ssd_iter_140000.caffemodel"
+        deploy = "face/detection/deploy.json"
+        model_path = "face/detection/res10_300x300_ssd_iter_140000.caffemodel"
 
         self.detector = cv2.dnn.readNetFromCaffe(deploy, model_path)
 
@@ -39,7 +39,7 @@ class Detector:
                 detected[detected.__len__()] = {
                     'confidence': confidence,
                     'box': {
-                        'start_point': (startX, startY), 'end_point': (endX, endY)
+                        'start_point': (int(startX), int(startY)), 'end_point': (int(endX), int(endY))
                     },
                     'face': frame[startY:endY, startX:endX]
 

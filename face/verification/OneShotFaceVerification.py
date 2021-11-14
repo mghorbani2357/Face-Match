@@ -1,12 +1,10 @@
-import os
-from base64 import b64encode, b64decode
-from typing import re
+from base64 import b64decode
 
 import cv2
 import numpy as np
-from face_dataset import Dataset
+from face.dataset import Dataset
 
-import face_verification.FaceToolKit as ftk
+import face.verification.FaceToolKit as ftk
 
 
 class Verifier:
@@ -15,7 +13,7 @@ class Verifier:
 
     def __init__(self, dataset_path=None):
         self.verifier = ftk.Verification()
-        self.verifier.load_model("./models/20180204-160909/")
+        self.verifier.load_model("face/verification/models/20180204-160909/")
         self.verifier.initial_input_output_tensors()
         if dataset_path is not None:
             self.dataset = Dataset(dataset_path)
@@ -45,7 +43,7 @@ class Verifier:
                  faces(list)
         """
 
-        min_dist = 1000
+        dist = min_dist = 1000
         similar_face_index = None
 
         for face in faces:

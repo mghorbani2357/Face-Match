@@ -1,12 +1,11 @@
 import instaloader.instaloader
 from instaloader import Profile
-from face_dataset import Dataset
-from face_detection import Detector
+from face.dataset import Dataset
+from face.detection import Detector
 import requests
 from base64 import b64encode
 import cv2
 import numpy as np
-import yaspin
 import asyncio
 from yaspin import yaspin
 
