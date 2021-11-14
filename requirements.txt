@@ -1,0 +1,9 @@
+flask~=2.0.2
+requests~=2.26.0
+numpy~=1.21.2
+pillow~=8.4.0
+scipy~=1.7.1
+opencv-python~=4.5.4.58
+imutils~=0.5.4
+instaloader~=4.8.1
+yaspin~=2.1.0
