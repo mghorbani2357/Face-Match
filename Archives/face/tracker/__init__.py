@@ -1,6 +1,6 @@
 import time
 
-from face.face_verification.OneShotFaceVerification import Verifier
+from Archives.face import Verifier
 
 
 class Tracker:

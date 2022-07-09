@@ -1,8 +1,8 @@
 import cv2
 import os
-from dotenv import load_dotenv
+# from dotenv import load_dotenv
 
-load_dotenv()
+# load_dotenv()
 
 
 def poi(frame, starting_point, ending_point, padding=0.7, text=''):

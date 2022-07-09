@@ -1,15 +1,14 @@
 import instaloader.instaloader
 from instaloader import Profile
-from face.dataset import Dataset
-from face.detection import Detector
+from Archives.face.dataset import Dataset
+from Archives.face.detection import Detector
 import requests
-from base64 import b64encode
 import cv2
 import numpy as np
 import asyncio
 from yaspin import yaspin
 
-from utils import poi
+from Archives.utils import poi
 
 
 class InstaFeeder:
@@ -21,7 +20,8 @@ class InstaFeeder:
 
         Args:
               dataset_path(str)
-              auth(tuple)
+              username(str)
+              password(str)
               session_path(str)
         """
         self.dataset = Dataset(dataset_path)
@@ -50,7 +50,7 @@ class InstaFeeder:
 
         json_profile = {
             'id': profile.userid,
-            'image': b64encode(response.content).decode(),
+            'image': response.content,
             'detected_faces': [],
             'username': profile.username,
             'full_name': profile.full_name,
@@ -66,7 +66,7 @@ class InstaFeeder:
             try:
                 face = img[starting_point[0]:ending_point[0], starting_point[1]:ending_point[1]]
                 is_success, im_buf_arr = cv2.imencode('.jpg', face)
-                json_profile['detected_faces'].append(b64encode(im_buf_arr).decode())
+                json_profile['detected_faces'].append(im_buf_arr)
                 frame = poi(img, detected_face['box']['start_point'], detected_face['box']['end_point'], text='404')
 
             except:

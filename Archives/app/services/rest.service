@@ -1,0 +1,15 @@
+[Unit]
+Description=uWSGI INSTANCE
+After=network.target
+
+[Service]
+LimitNOFILE=infinity
+LimitNPROC=infinity
+User=root
+Group=root
+WorkingDirectory=/opt/face-match/
+Environment="PATH=/opt/face-match/venv/bin/:$PATH"
+ExecStart=/opt/face-match/venv/bin/python3.9 /opt/face-match/manage.py
+
+[Install]
+WantedBy=multi-user.target

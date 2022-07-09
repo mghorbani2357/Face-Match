@@ -1,0 +1,10 @@
+flask
+requests
+numpy
+pillow
+scipy
+opencv-python
+imutils
+instaloader
+yaspin
+websockets

@@ -1,0 +1,1 @@
+from .OneShotFaceVerification import Verifier
