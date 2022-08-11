@@ -1,0 +1,13 @@
+opencv-python~=4.5.4.58
+numpy~=1.22.3
+flask~=2.0.2
+imutils~=0.5.4
+instaloader~=4.8.1
+requests~=2.26.0
+yaspin~=2.1.0
+pillow~=8.4.0
+scipy~=1.7.1
+mtcnn~=0.1.1
+tensorflow-macos; sys_platform == 'darwin'
+tensorflow; sys_platform != 'darwin'
+scikit-image~=0.19.2
